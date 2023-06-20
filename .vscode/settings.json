@@ -1,0 +1,5 @@
+{
+    "haskell.manageHLS": "GHCup",
+    "haskell.plugin.eval.config.exception": false,
+    "haskell.indentationRules.enabled": true
+}
