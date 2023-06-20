@@ -103,7 +103,8 @@ winMove bl pc = wrssh
         w = map (\s -> unzip s ) rs
         wrs = map (\(s,x) -> if sum x == 2 then (True,15 - sum s) else (False,0)) w
         wrss = filter (\(b,_) -> b) wrs
-        wrssh = if null wrss then (False,0) else head wrss
+        wrssr = filter (\(_,x) -> rightMove bl x) wrss
+        wrssh = if null wrssr then (False,0) else head wrssr
 
 loseMove :: ChessBoard -> String -> (Bool,Int)
 loseMove bl pc = if pc == "O" then winMove bl "X" else winMove bl "O"
