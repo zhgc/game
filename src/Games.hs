@@ -1,4 +1,5 @@
-module Game (game1) where
+module Games(game1) where
+
 import System.Random
 
 -- 自定义类型

@@ -1,7 +1,7 @@
 module Main where
 -- import System.Random
 import Lib
-import Game ( game1 )
+import Games ( game1 )
 import Hand (play_human_computer)
 main :: IO ()
 main = manu 
