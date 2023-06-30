@@ -1,5 +1,6 @@
 module Hand(goHand, win, play_human_computer) where
 import System.Random
+    ( randomIO, Random(randomR, random), RandomGen )
 import Data.Char (toUpper)
 
 data Hand = Rock

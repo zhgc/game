@@ -1,6 +1,6 @@
 module Main where
 -- import System.Random
-import Lib
+import Lib ( guess_number )
 import Games ( game1 )
 import Hand (play_human_computer)
 main :: IO ()

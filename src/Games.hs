@@ -1,6 +1,6 @@
 module Games(game1) where
 
-import System.Random
+import System.Random ( randomRIO )
 
 -- 自定义类型
 type ChessBoard = [String]
