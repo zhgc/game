@@ -17,4 +17,4 @@ squ :: Float -> Float
 squ n = foldn 0 (\x -> (sqrt x + 1)**2) n
 
 pow' :: Float -> Float -> Float
-pow' m = foldn 0 ((\n m-> n ** m) m) 
+pow' m = foldn 0 ((\m' n -> n ** m') m) 

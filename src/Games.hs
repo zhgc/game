@@ -148,8 +148,6 @@ winMove bl pc
                               else second) ,n == a || n == b || n== c]  |
                              (a,b,c) <- abc]))
 
-
-
 loseMove :: ChessBoard -> String -> (Bool,Int)
 loseMove bl pc = if pc == "O" then winMove bl "X" else winMove bl "O"
 
@@ -169,6 +167,7 @@ in_f (b:bs) (m:mss) condition
     | condition b = (True,m) 
     | otherwise = in_f bs mss condition
 
+-- 检查移动是否可行
 rightMove :: ChessBoard -> Int -> Bool
 rightMove bl c = if (sum r::Int) >= 1 then False else True
     where
@@ -186,9 +185,11 @@ check bl
         nb = zip bl [4,9,2,3,5,7,8,1,6]
         (fn,sn) = part nb
 
+-- 是否和棋
 draw :: ChessBoard -> Bool
 draw bl = if (sum [ if b /= "O" && b/= "X" then 1 else 0 | b <- bl ] :: Int) == 0 then True else False 
 
+-- 是否胜利
 win :: [Int] -> Bool
 win ns = if (sum w :: Int) == 15 then True else False
     where
