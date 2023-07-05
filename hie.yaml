@@ -1,0 +1,12 @@
+cradle:
+  multi:
+    - path: "./app"
+      config:
+        cradle:
+          cabal:
+            component: "sixthcabalbuild:exe:sixthcabalbuild"
+    - path: "./src"
+      config:
+        cradle:
+          cabal:
+            component: "sixthcabalbuild:exe:sixthcabalbuild"

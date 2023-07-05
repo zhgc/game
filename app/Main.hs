@@ -3,19 +3,21 @@ module Main where
 import Lib ( guess_number )
 import Games ( game1 )
 import Hand (play_human_computer)
+import Hangman (hangman)
 main :: IO ()
 main = manu 
 
 manu :: IO ()
 manu = do 
-    putStrLn "选择游戏：\n1. 猜数游戏\n2. 井字棋\n3. 石头剪刀布\n4. 退出"
+    putStrLn "选择游戏：\n1. 猜数游戏\n2. 井字棋\n3. 石头剪刀布\n4.猜数游戏\nexit. 退出"
     c <- getLine
-    if c /= "4"
+    if c /= "exit"
         then do
             case c of
                 "1" -> guess_number
                 "2" -> game1
                 "3" -> play_human_computer
+                "4" -> hangman
                 _   -> do
                     putStrLn "请重新选择"
                     manu
