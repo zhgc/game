@@ -14,10 +14,10 @@ manu = do
     if c /= "exit"
         then do
             case c of
-                "1" -> guess_number
-                "2" -> game1
-                "3" -> play_human_computer
-                "4" -> hangman
+                "1" -> Lib.guess_number
+                "2" -> Games.game1
+                "3" -> Hand.play_human_computer
+                "4" -> Hangman.hangman
                 _   -> do
                     putStrLn "请重新选择"
                     manu

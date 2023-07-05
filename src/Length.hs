@@ -1,7 +1,10 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
 module Length () where
+
+-- 总的来说这个文件就是测试一下类型约束和语言扩展，没有什么实际意义
 
 class LengthUnit a 
 
