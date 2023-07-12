@@ -71,7 +71,10 @@ executable sixthcabalbuild
 
     -- Directories containing source files.
     hs-source-dirs:   app,src
-    other-modules:    Lib,Hand,Games,Files,Func,Coin,Hangman,Length
+    other-modules:    Lib,Hand,Games,Files,Func,Coin,Hangman
+
+    -- c代码位置
+    c-sources: csrc/mylib.c
 
     -- Base language which the package is written in.
     default-language: GHC2021
