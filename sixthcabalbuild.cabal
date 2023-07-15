@@ -67,11 +67,11 @@ executable sixthcabalbuild
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.18.0.0 , random
+    build-depends:    base ^>=4.18.0.0 , random 
 
     -- Directories containing source files.
     hs-source-dirs:   app,src
-    other-modules:    Lib,Hand,Games,Hangman,Csin
+    other-modules:    Lib,Hand,Games,Hangman,Csin,Game2048
 
     -- c代码位置
     c-sources: csrc/mylib.c

@@ -5,12 +5,14 @@ import Games ( game1 )
 import Hand (play_human_computer)
 import Hangman (hangman)
 import Csin (getsin)
+import Game2048 (game2048Start)
+-- import TcpEcho(server)
 main :: IO ()
 main = manu 
 
 manu :: IO ()
 manu = do 
-    putStrLn "选择游戏：\n1. 猜数游戏\n2. 井字棋\n3. 石头剪刀布\n4.猜数游戏\n5.测试使用c函数计算sin值exit. 退出"
+    putStrLn "选择游戏：\n1. 猜数游戏\n2. 井字棋\n3. 石头剪刀布\n4. 猜数游戏\n5. 测试使用c函数计算sin值\n6. 2048游戏\nexit. 退出"
     c <- getLine
     if c /= "exit"
         then do
@@ -20,6 +22,8 @@ manu = do
                 "3" -> Hand.play_human_computer
                 "4" -> Hangman.hangman
                 "5" -> getsin
+                "6" -> game2048Start
+                -- "6" -> server
                 _   -> do
                     putStrLn "请重新选择"
                     manu
