@@ -45,10 +45,6 @@ moveBoard MoveRight = map reverse . map moveRowLeft . map reverse
 moveBoard MoveUp    = L.transpose . map moveRowLeft . L.transpose
 moveBoard MoveDown  = L.transpose . moveBoard MoveRight . L.transpose
 
--- 游戏的主程序，在初始状态下添加两个2，然后进入循环
-game2048Start :: IO () 
-game2048Start = return startBoard >>= newTwo >>= newTwo >>= loop
-
 -- 循环
 loop :: Board -> IO ()
 loop board = do 
@@ -74,11 +70,11 @@ loop board = do
 win :: Board -> Bool
 win board = 2048 `elem` (concat board)
 
--- 判断棋盘有没有移动空间，用列表推导式生成对各种情况的判断，用or来判断其中时候是否有真值。
+-- 判断棋盘有没有移动空间，用列表推导式生成对各种情况的判断，用or来判断其中是否有真值。
 boardMoveable :: Board -> Bool
 boardMoveable board = or [(\xx ->board /= moveBoard xx board) x | x <- [MoveLeft,MoveRight,MoveUp,MoveDown]]
 
--- 往一行中添加2，如果成功就返回修改的棋盘，失败就再试一次。
+-- 添加2，如果成功就返回修改的棋盘，失败就再试一次。
 newTwo :: Board -> IO Board
 newTwo board= do 
     x <- randomRIO (0,3)
@@ -98,3 +94,7 @@ toOperation ('a':_) = Just MoveLeft
 toOperation ('s':_) = Just MoveDown
 toOperation ('d':_) = Just MoveRight
 toOperation _   = Nothing
+
+-- 游戏的主程序，在初始状态下添加两个2，然后进入循环
+game2048Start :: IO () 
+game2048Start = putStrLn "2048游戏，用wasd控制方向">> return startBoard >>= newTwo >>= newTwo >>= loop
