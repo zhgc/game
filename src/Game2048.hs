@@ -1,3 +1,4 @@
+{-# LANGUAGE ParallelListComp #-}
 module Game2048 where
 import Board (printBoard)
 import System.Random (randomRIO)
@@ -74,15 +75,14 @@ win board = 2048 `elem` (concat board)
 boardMoveable :: Board -> Bool
 boardMoveable board = or [(\xx ->board /= moveBoard xx board) x | x <- [MoveLeft,MoveRight,MoveUp,MoveDown]]
 
--- 添加2，如果成功就返回修改的棋盘，失败就再试一次。
+-- 更新，提取出为零的瓷砖，不再进行重复的比较
 newTwo :: Board -> IO Board
 newTwo board= do 
-    x <- randomRIO (0,3)
-    y <- randomRIO (0,3)
-    if board!!x!!y == 0
-    then return $ setNew x (setNew y 2 (board !! x)) board
-    else newTwo board
-
+    let zerolist = filter (\(_,_,v) -> v == 0) [(x,y,v)| xx <-board,v<-xx|x<-[0,1,2,3]::[Int] , y<-[0,1,2,3]::[Int]]
+    xy <- randomRIO (0,length zerolist - 1)
+    let (x,y,_) = zerolist!!xy
+    return $ setNew x (setNew y 2 (board !! x)) board
+        
 -- newTwo的 辅助函数
 setNew :: Int -> a -> [a] -> [a]
 setNew n e s = take n s ++ [e] ++ drop (n + 1) s
