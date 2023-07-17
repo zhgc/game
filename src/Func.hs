@@ -1,5 +1,7 @@
 {-# LANGUAGE ParallelListComp #-}
-module Func (foldn,add,mul,pow,squ,pow',fibs,fibs',primes) where
+module Func (foldn,add,mul,pow,squ,pow',fibs,fibs',primes,evens,odds,list4,list4',list5,list5',isPrime,isPrime') where
+import Control.Monad (ap)
+import GHC.Base (join)
 
 foldn :: Float -> (Float -> Float) -> Float -> Float
 foldn z _ 0 = z
@@ -39,3 +41,29 @@ sieve :: [Integer] -> [Integer]
 --  实际上没必要写空列表的情况，不过编译器会警告。实际上由于只有primes调用它，所以根本不会有空列表传入。
 sieve [] = []
 sieve (x:xs) = x : sieve [y|y <- xs,y `mod` x > 0]
+
+evens :: [Int]
+evens = filter (\x-> x`mod`2 == 0) [0..]
+
+odds :: [Int]
+odds = [x+1| x <- evens]
+
+list4 :: [Int]
+list4 = 0:concat [[x,-x]|x<-[1..]]
+
+list4' :: [Int]
+list4' = iterate (\x -> if x <= 0 then (x - 1) * (-1) else - x ) 0
+
+list5 :: [Int]
+list5 = [11..]
+
+list5' :: [Int]
+list5' = iterate (\x -> succ x) 11
+
+-- 但这个被网友吹的挺高，怎么连0，1都被识别成素数啊，不会是因为primes的定义没有配套跟上吧。
+isPrime :: Integer -> Bool
+isPrime = ap (all.((0/=).).mod) $ flip takeWhile primes.(.join(*)).flip (<=) 
+
+-- 不能这样写，因为primes是无穷序列，所以elem会一直找。
+isPrime' :: Integer -> Bool
+isPrime' x = x `elem` primes
