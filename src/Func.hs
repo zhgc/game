@@ -1,5 +1,5 @@
 {-# LANGUAGE ParallelListComp #-}
-module Func (foldn,add,mul,pow,squ,pow',fibs,fibs',primes,evens,odds,list4,list4',list5,list5',isPrime,isPrime',hamming,hamming') where
+module Func (foldn,add,mul,pow,squ,pow',fibs,fibs',primes,evens,odds,list4,list4',list5,list5',isPrime,isPrime',hamming,hamming',fib,runningSum) where
 import Control.Monad (ap)
 import GHC.Base (join)
 
@@ -20,7 +20,18 @@ squ :: Float -> Float
 squ n = foldn 0 (\x -> (sqrt x + 1)**2) n
 
 pow' :: Float -> Float -> Float
-pow' m = foldn 0 ((\m' n -> n ** m') m) 
+pow' m = foldn 0 ((\m' n -> n ** m') m)
+
+-- 斐波那契
+
+fix :: (t -> t) -> t
+fix f = x where x = f x
+ff :: (Integer -> Integer -> Integer -> Integer)-> Integer -> Integer -> Integer -> Integer
+ff = \f n a b->if n<=1
+                then b
+                else f (n-1) b (a+b)
+fib :: Integer -> Integer
+fib = \n -> (fix ff) n 0 1
 
 fibs :: [Integer]
 fibs = 0:1:[x + y | (x,y) <- zip fibs (tail fibs)]
@@ -35,12 +46,6 @@ fibs' = 0:1:[x+y|x<-fibs'|y<-(tail fibs')]
 -- 艾拉托斯尼特筛法取素数
 primes :: [Integer]
 primes = sieve [2..]
-
--- 筛法
-sieve :: [Integer] -> [Integer]
---  实际上没必要写空列表的情况，不过编译器会警告。实际上由于只有primes调用它，所以根本不会有空列表传入。
-sieve [] = []
-sieve (x:xs) = x : sieve [y|y <- xs,y `mod` x > 0]
 
 evens :: [Int]
 evens = filter (\x-> x`mod`2 == 0) [0..]
@@ -68,6 +73,9 @@ isPrime = ap (all.((0/=).).mod) $ flip takeWhile primes.(.join(*)).flip (<=)
 isPrime' :: Integer -> Bool
 isPrime' x = x `elem` primes
 
+-- 可以了，这个成功了，不过速度真的很慢，慢的无法接受，应该继续想办法。
+-- 现在修改了，性能勉强可以接受，不过还是很慢，应该继续想办法。
+
 hamming :: [Int]
 hamming = hsieve [1..]
 
@@ -75,8 +83,6 @@ hsieve :: [Int] -> [Int]
 hsieve [] = []
 hsieve (x:xs) = x : [y | y<- xs ,isHamming y]
 
--- 可以了，这个成功了，不过速度真的很慢，慢的无法接受，应该继续想办法。
--- 现在修改了，性能勉强可以接受，不过还是很慢，应该继续想办法。
 isHamming :: Int -> Bool
 isHamming x = or [x == ((2^i)*(3^j)*(5^k))|i<-[0..x `div` 2],j<-[0..x `div` 3],k<-[0..x `div` 5]]
 
@@ -100,14 +106,14 @@ hs x n = m:hs m (n+1)
         xs = take n hamming'
         -- 删除k
         -- 又想到一点，j 不应该是大于i，而应该是大于x除i，而i不应该大于sqrtx
-        ms = [i*j|i<-takei xs x,j<-dp xs (x `div` i),i*j>x]
+        ms = [i*j|i<-drop 1 $ takei xs x,j<-dp xs (x `div` i)]
         m = minimum ms 
 
 takei :: [Int] -> Int->[Int]
 takei xs n = take (geti xs n) xs
 
 sqfl :: Int->Int
-sqfl n = floor $ sqrt $ fromIntegral n
+sqfl n = floor (sqrt (fromIntegral n::Double))
 
 geti :: [Int] -> Int -> Int
 geti []     _ = 0
@@ -132,3 +138,23 @@ getL (x:xs) n
 -- hs' :: Int -> Int -> [Int]
 -- hs' x n = m:hs m (n+1)
 --     where
+
+
+-- 前缀累加和列表
+runningSum :: [Int] -> [Int]
+runningSum []       = []
+runningSum xs@(x:_) = 0:x:rs 2 xs
+
+rs :: Int -> [Int] -> [Int]
+rs n xs
+    | n == length xs = [m]
+    | otherwise      = m:rs (n+1) xs
+    where
+    m = sum $ take n xs
+
+-- 筛法
+--  实际上没必要写空列表的情况，不过编译器会警告。实际上由于只有primes调用它，所以根本不会有空列表传入。
+sieve :: [Integer] -> [Integer] 
+sieve []     = [] 
+sieve (x:xs) = x : sieve [y|y <- xs,y `mod` x > 0]
+-- 在这个函数下面写的代码会部分失去语法高亮，但不影响编译，我现在还没搞清楚这是为什么。不过先把其他函数放到上面去写了。
