@@ -66,6 +66,7 @@ list5' :: [Int]
 list5' = iterate (\x -> succ x) 11
 
 -- 但这个被网友吹的挺高，怎么连0，1都被识别成素数啊，不会是因为primes的定义没有配套跟上吧。
+-- 而且这个不好读，有种炒茴香豆的感觉
 isPrime :: Integer -> Bool
 isPrime = ap (all.((0/=).).mod) $ flip takeWhile primes.(.join(*)).flip (<=) 
 

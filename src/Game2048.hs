@@ -14,7 +14,7 @@ pb =putStr.(printBoard 4 4)
 
 -- 棋盘初始状态
 startBoard :: Board
-startBoard = take 4 (repeat $ take 4 (repeat 0))
+startBoard = take 4 $ repeat $ take 4 $ repeat 0
 
 -- 移动一行的数字，并且同时计算合并的结果
 moveRowLeft :: [Int] -> [Int]
@@ -24,7 +24,7 @@ moveRowLeft xs  = newright ++ newzero ++ left
         -- 将本行数字分为零和非零，在计算之后计算长度的变化来补零
         (left,right) = partition (==0) xs
         newright = eval right
-        newzero  = putZero (length right - length newright)
+        newzero  = take (length right - length newright) (repeat 0)
 
 -- 计算合并项
 eval :: [Int] -> [Int]
@@ -33,11 +33,6 @@ eval [x] = [x]
 eval (x:y:xs)
     | x == y    = x+y:eval xs 
     | otherwise = x:eval (y:xs)
-
--- 用来补零的辅助函数
-putZero :: Int -> [Int]
-putZero 0 = []
-putZero n = 0:putZero (n-1)    
 
 -- 定义四个方向的移动函数。
 moveBoard :: Operation -> Board -> Board
