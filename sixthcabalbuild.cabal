@@ -67,7 +67,7 @@ executable sixthcabalbuild
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    base ^>=4.18.0.0 , random 
+    build-depends:    base ^>=4.18.0.0 , random , memoize 
 
     -- Directories containing source files.
     hs-source-dirs:   app,src

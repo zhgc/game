@@ -10,11 +10,11 @@ data Operation = MoveLeft|MoveRight|MoveUp|MoveDown
 
 -- 获得打印棋盘的函数
 pb :: Board -> IO ()
-pb =putStr.(printBoard 4 4) 
+pb board = putStr.(printBoard (length $ board!!0) (length board)) $ board 
 
 -- 棋盘初始状态
-startBoard :: Board
-startBoard = take 4 $ repeat $ take 4 $ repeat 0
+startBoard :: Int -> Int -> Board
+startBoard x y = take y $ repeat $ take x $ repeat 0
 
 -- 移动一行的数字，并且同时计算合并的结果
 moveRowLeft :: [Int] -> [Int]
@@ -73,10 +73,10 @@ boardMoveable board = or [(\xx ->board /= moveBoard xx board) x | x <- [MoveLeft
 -- 更新，提取出为零的瓷砖，不再进行重复的比较
 newTwo :: Board -> IO Board
 newTwo board= do 
-    let zerolist = filter (\(_,_,v) -> v == 0) [(x,y,v)| xx <-board,v<-xx|x<-[0,1,2,3]::[Int] , y<-[0,1,2,3]::[Int]]
+    let zerolist = filter (\(_,_,v) -> v == 0) [(x,y,v)| xx <-board,v<-xx|y<-[0..length board - 1]::[Int]  , x<-[0..(length $ board!!0)-1]::[Int]]
     xy <- randomRIO (0,length zerolist - 1)
     let (x,y,_) = zerolist!!xy
-    return $ setNew x (setNew y 2 (board !! x)) board
+    return $ setNew y (setNew x 2 (board !! y)) board
         
 -- newTwo的 辅助函数
 setNew :: Int -> a -> [a] -> [a]
@@ -92,4 +92,12 @@ toOperation _   = Nothing
 
 -- 游戏的主程序，在初始状态下添加两个2，然后进入循环
 game2048Start :: IO () 
-game2048Start = putStrLn "2048游戏，用wasd控制方向">> return startBoard >>= newTwo >>= newTwo >>= loop
+game2048Start = putStrLn "2048游戏，用wasd控制方向">> return (startBoard 4 4) >>= newTwo >>= newTwo >>= loop
+
+set2048Start :: IO()
+set2048Start = do
+    putStrLn "自定义2048的棋盘\n请输入x轴，："
+    x <- getLine
+    putStrLn "请输入y轴："
+    y <- getLine
+    return (startBoard (read x::Int)  (read y::Int) )>>= newTwo >>= newTwo >>= loop
