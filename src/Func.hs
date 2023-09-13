@@ -1,5 +1,5 @@
 {-# LANGUAGE ParallelListComp #-}
-module Func (foldn,add,mul,pow,squ,pow',fibs,fibs',primes,evens,odds,list4,list4',list5,list5',isPrime,isPrime',hamming,hamming',fib,runningSum) where
+module Func (foldn,add,mul,pow,squ,pow',fibs,fibs',fibs'',primes,evens,odds,list4,list4',list5,list5',isPrime,isPrime',hamming,hamming',fib,runningSum) where
 import Control.Monad (ap)
 import GHC.Base (join)
 
@@ -42,6 +42,9 @@ fibs = 0:1:[x + y | (x,y) <- zip fibs (tail fibs)]
 -- 注意一点，如果两个列表的长度不相同，那么最终生成的列表也只和较短的一个等长。当然在实现无穷列表的时候就无所谓了。
 fibs' :: [Integer]
 fibs' = 0:1:[x+y|x<-fibs'|y<-(tail fibs')]
+
+fibs'' :: [Integer]
+fibs'' = 0:1:zipWith (+) fibs'' (tail fibs'')
 
 -- 艾拉托斯尼特筛法取素数
 primes :: [Integer]

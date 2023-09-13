@@ -10,11 +10,11 @@ abc :: [(Int,Int,Int)]
 abc = [(4,9,2),(3,5,7),(8,1,6),(4,3,8),(9,5,1),(2,7,6),(4,5,6),(2,5,8)]   -- 胜利条件
 
 ms :: [Int]   -- 三阶幻方
-ms = [4,9,2,3,5,7,8,1,6]  
+ms = [4,9,2,3,5,7,8,1,6]
 
 -- 游戏主程序
-game1 :: IO () 
-game1 = do 
+game1 :: IO ()
+game1 = do
     putStrLn "选择游戏模式：\n1. 人机对战\n2. 人人对战"
     mode <- getLine
     case mode of
@@ -22,8 +22,8 @@ game1 = do
             putStrLn "猜先，1. 单 2. 双"
             c <- getLine
             let cn = read c:: Int
-            r <- randomRIO (1,100) 
-            let playerChess = if cn == r `mod`2 
+            r <- randomRIO (1,100)
+            let playerChess = if cn == r `mod`2
                 then "O"
                 else "X"
             putStrLn ("您的棋子是"++playerChess)
@@ -36,10 +36,10 @@ game1 = do
         _   -> do
             putStr "输入错误，请重新"
             game1
-    
+
 -- 人人对战模式
 p2p :: ChessBoard -> IO ()
-p2p boardList = do 
+p2p boardList = do
     c1 <- check boardList
     if c1 /= " "
     then putStrLn (result c1)
@@ -54,7 +54,7 @@ p2p boardList = do
         else do
             putStr "后手棋子“X” "
             s <- getChess boardList2
-            let boardList3 = getBoardList boardList2 ("s",s) 
+            let boardList3 = getBoardList boardList2 ("s",s)
             board boardList3
             c3 <- check boardList3
             if c3 /= " "
@@ -76,18 +76,18 @@ p2e boardList playerChess = do
         then putStrLn (p2e_result c2 playerChess)
         else do
             s <- if playerChess == "O" then robChess boardList2 "X" else getChess boardList2
-            let boardList3 = getBoardList boardList2 ("s",s)     
-            board boardList3    
-            c3 <- check boardList3        
-            if c3 /= " "     
-            then putStrLn (p2e_result c3 playerChess)      
-            else p2e boardList3 playerChess        
+            let boardList3 = getBoardList boardList2 ("s",s)
+            board boardList3
+            c3 <- check boardList3
+            if c3 /= " "
+            then putStrLn (p2e_result c3 playerChess)
+            else p2e boardList3 playerChess
 
 -- 输出棋局结果
-result :: String -> String 
+result :: String -> String
 result winner = case winner of
-        "O" -> "先手胜利" 
-        "X" -> "后手获胜" 
+        "O" -> "先手胜利"
+        "X" -> "后手获胜"
         _   -> "两位棋手下成了平局"
 
 -- 输出人机对战模式的棋局结果 ， 依赖result
@@ -97,15 +97,15 @@ p2e_result winner player = case winner of
         "X" -> if player == "X" then  "恭喜你" else  "很遗憾"
         _   -> ""
         ++ rs
-        where 
+        where
             rs = result winner
 
 -- 获得机器的移动步骤，仔细想一下，或许不需要IO，但getChess是IO Int，两者需要具有相同类型
 -- 如果rob改成ChessBoard -> String -> Int ,那么getChess也应该包装成 ChessBoard -> Int 
 robChess :: ChessBoard -> String -> IO Int
-robChess bl pc = do 
+robChess bl pc = do
     let (flag,chess) = winMove bl pc -- (Bool,Int)
-    if flag 
+    if flag
     then return chess
     else do
         let (flag2,chess2) = loseMove bl pc
@@ -113,15 +113,15 @@ robChess bl pc = do
         then return chess2
         else do
             let(flag3,chess3) = inCorner bl
-            if flag3 
+            if flag3
             then return chess3
-            else do 
+            else do
                 let (flag4,chess4) = inSpace bl
-                if flag4 
+                if flag4
                 then return chess4
-                else do 
+                else do
                     let (flag5,chess5) = inEdge bl
-                    if flag5 
+                    if flag5
                     then return chess5
                     else return 0
 
@@ -136,15 +136,15 @@ winMove bl pc
     | otherwise = head w
     where
         (first,second) = part (zip bl ms)
-        w = filter 
-            (\(b,x) -> b && rightMove bl x) 
-            (map 
-                (\(s,x) -> if sum x == 2 then (True,15 - sum s) else (False,0)) 
-                (map 
-                    (\s -> unzip s ) 
-                    [[ (n,1::Int) | 
-                        n <- (if pc == "O" 
-                              then first 
+        w = filter
+            (\(b,x) -> b && rightMove bl x)
+            (map
+                (\(s,x) -> if sum x == 2 then (True,15 - sum s) else (False,0))
+                (map
+                    (\s -> unzip s )
+                    [[ (n,1::Int) |
+                        n <- (if pc == "O"
+                              then first
                               else second) ,n == a || n == b || n== c]  |
                              (a,b,c) <- abc]))
 
@@ -152,10 +152,10 @@ loseMove :: ChessBoard -> String -> (Bool,Int)
 loseMove bl pc = if pc == "O" then winMove bl "X" else winMove bl "O"
 
 inCorner :: ChessBoard -> (Bool,Int)
-inCorner bl = in_f bl ms (\x -> x == "1" || x == "3" || x == "7" || x == "9") 
+inCorner bl = in_f bl ms (\x -> x == "1" || x == "3" || x == "7" || x == "9")
 
 inSpace :: ChessBoard -> (Bool,Int)
-inSpace bl = in_f  bl ms (\x -> x == "5")
+inSpace bl = in_f  bl ms (== "5")
 
 inEdge :: ChessBoard -> (Bool,Int)
 inEdge bl = in_f bl ms (\x -> x == "2" || x == "4" || x == "6" || x == "8")
@@ -163,8 +163,8 @@ inEdge bl = in_f bl ms (\x -> x == "2" || x == "4" || x == "6" || x == "8")
 in_f :: ChessBoard -> [Int] -> (String -> Bool) -> (Bool,Int)
 in_f [] _ _ = (False,0)
 in_f _ [] _ = (False,0)
-in_f (b:bs) (m:mss) condition 
-    | condition b = (True,m) 
+in_f (b:bs) (m:mss) condition
+    | condition b = (True,m)
     | otherwise = in_f bs mss condition
 
 -- 检查移动是否可行
@@ -187,7 +187,7 @@ check bl
 
 -- 是否和棋
 draw :: ChessBoard -> Bool
-draw bl = if (sum [ if b /= "O" && b/= "X" then 1 else 0 | b <- bl ] :: Int) == 0 then True else False 
+draw bl = if (sum [ if b /= "O" && b/= "X" then 1 else 0 | b <- bl ] :: Int) == 0 then True else False
 
 -- 是否胜利
 win :: [Int] -> Bool
@@ -208,8 +208,8 @@ part ((c,n):nb)
 
 getBoardList :: ChessBoard -> (String,Int) -> ChessBoard
 getBoardList bl (_,0) = bl
-getBoardList bl pc = [ putChess xy pc | xy <- numBoard] 
-    where 
+getBoardList bl pc = [ putChess xy pc | xy <- numBoard]
+    where
         numBoard = zip bl [4,9,2,3,5,7,8,1,6]
 
 putChess :: (String,Int) -> (String,Int) -> String
@@ -229,7 +229,7 @@ board list = do
     putStrLn "+-----+-----+-----+"
 
 getChess :: ChessBoard -> IO Int
-getChess boardList = do 
+getChess boardList = do
     putStrLn "请输入棋子位置："
     c <- getLine
     let r = case c of
@@ -244,7 +244,7 @@ getChess boardList = do
             "9" -> 6
             _   -> 0
     let right = sum [y| (x,y) <- zip boardList [4,9,2,3,5,7,8,1,6], x /= "O" && x /= "X" && y == r ]
-    if right /= 0 
+    if right /= 0
         then return right
         else do
             putStrLn "输入错误，请重试"
